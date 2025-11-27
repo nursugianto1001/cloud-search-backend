@@ -5,22 +5,17 @@ stages:
   - deploy
 
 variables:
-  IMAGE_NAME: "registry.local:5000/cloud-search-backend:latest"
+  IMAGE_NAME: "cloud-search-backend:latest"
 
 build_backend:
   stage: build
   script:
-    - echo "Logging in to registry..."
-    - docker login registry.local:5000 -u $REGISTRY_USER -p $REGISTRY_PASSWORD
     - echo "Building backend image..."
     - docker build -t $IMAGE_NAME .
-    - echo "Pushing backend image..."
-    - docker push $IMAGE_NAME
 
 deploy_backend:
   stage: deploy
   script:
-    - echo "Deploy via Komodo API or Docker..."
-    - docker pull $IMAGE_NAME
+    - echo "Restart backend container..."
     - docker compose -f /home/ubuntu/cloud-search-app/docker-compose.yml up -d backend
   when: on_success
